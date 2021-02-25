@@ -1,13 +1,13 @@
 package ru.itmo
 
 import java.nio.file.{Files, Paths}
-
-import ru.itmo.MatrixKeyboardInput.{getMatrixFromInput, printMatrix}
-import ru.itmo.Solver.ConverterToTriangleMatrix.{k, toTriangle}
+import ru.itmo.MatrixKeyboardInput.{getMatrixFromInput, printMatrix, setScale}
+import ru.itmo.Solver.ConverterToTriangleMatrix.{k, swappedColumnsMap, toTriangle}
 import ru.itmo.Solver.Determinant.determinantOfTriangle
-import ru.itmo.Solver.{checkAnswers, solve}
+import ru.itmo.Solver.{checkAnswers, solve, ~=}
 
 import scala.annotation.tailrec
+import scala.collection.mutable
 import scala.io.StdIn.readLine
 
 object Main {
@@ -15,20 +15,21 @@ object Main {
   def main(args: Array[String]): Unit = {
     val mode = selectMode()
     val matrix: Array[Array[Double]] = getMatrix(mode)
-    printMatrix(matrix, 2)
-    val triangle = toTriangle(matrix)
-    printMatrix(triangle)
-    val determinant = determinantOfTriangle(triangle, k)
-    println(s"determinant = $determinant")
-    val xVec = solve(triangle)
-    println("x are:")
-    for (i <- xVec.indices){
-      print(s"x${i+1} = ${xVec(i)} ")
-    }
-    println("\n===================")
-    val pogr = checkAnswers(triangle, xVec)
-    for(i <- pogr.indices){
-      print(s"b${i+1} = ${pogr(i)} ")
+    val initial = matrix.map(_.clone)
+    printMatrix(matrix)
+    try {
+      val xVec = solve(matrix)
+      println("x are:")
+      for ((i, x) <- xVec) {
+        println(s"x$i=$x ")
+      }
+      val pogr = checkAnswers(initial, xVec)
+      println()
+      for ((i, b) <- pogr) {
+        println(s"r$i=${b}")
+      }
+    } catch {
+      case e: Exception => println(e.printStackTrace())
     }
   }
 
@@ -58,12 +59,10 @@ object Main {
     FileHandler.toMatrix(file)
   }
 
-
   def getMatrix(mode: Int): Array[Array[Double]] = {
     mode match {
       case 1 => getMatrixFromFile
       case 2 => getMatrixFromInput
     }
   }
-
 }

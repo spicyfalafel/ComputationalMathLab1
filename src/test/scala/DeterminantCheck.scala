@@ -27,14 +27,6 @@ class DeterminantCheck extends UnitSpec {
     matr4x4
   }
 
-  /*
-    1 2 3 4
-    1 2 3 4    1 3 4
-    1 2 3 4 => 1 3 4
-    1 2 3 4    1 3 4
-   */
-
-
   it should "work fine with 2x2 matrix" in {
     val matr2x2: Array[Array[Double]] = Array.ofDim[Double](2, 2)
     matr2x2(0)(0) = 1
@@ -59,29 +51,4 @@ class DeterminantCheck extends UnitSpec {
     assert(0 == calculateDeterminant(matr3x3))
   }
 
-
-  "Determinant" should "work fine with 4x4 matrix" in {
-    val matrix = initializeMatrix4x4
-    assert(0 == calculateDeterminant(matrix))
-
-  }
-
-  it should "work fine with 5x5 matrix" in {
-    val matrix = toMatrix(readFile("5x5"))
-    assert(2730330 == calculateDeterminant(matrix))
-
-  }
-
-  it should "work fine with 7x7 matrix" in {
-    val matrix = toMatrix(readFile("7x7"))
-    assert(-336 == calculateDeterminant(matrix))
-  }
-
-
-  "Minor" should "be 3x3 testing 4x4 matrix" in {
-    val matrix = initializeMatrix4x4
-    val minor = getMatrixWithoutRowAndColumn(matrix, 1, 1)
-    assert(minor.length == 3)
-    assert(minor.forall(array => array.length == 3))
-  }
 }
